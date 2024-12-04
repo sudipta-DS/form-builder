@@ -9,7 +9,9 @@ function AllResponses() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/forms/${id}/responses`)
+      .get(
+        `https://form-builder-backend-c1bb.onrender.com/forms/${id}/responses`
+      )
       .then((response) => {
         setResponses(response.data);
         setLoading(false);
@@ -27,7 +29,7 @@ function AllResponses() {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Responses for Form ID: {id}</h1>
+      <h1 className="text-3xl font-bold mb-4">Responses for Form: {id}</h1>
       <div className="space-y-6">
         {responses.map((response, index) => (
           <div key={index} className="border rounded p-4 bg-gray-100">
@@ -37,7 +39,7 @@ function AllResponses() {
                 ([questionIndex, answer], i) => (
                   <li key={i}>
                     <strong>Question {parseInt(questionIndex) + 1}:</strong>{" "}
-                    {answer}
+                    {renderAnswer(answer)}
                   </li>
                 )
               )}
@@ -48,5 +50,34 @@ function AllResponses() {
     </div>
   );
 }
+
+const renderAnswer = (answer) => {
+  if (typeof answer === "string") {
+    // Simple text response
+    return answer;
+  } else if (Array.isArray(answer)) {
+    // Render array responses (multiple items or categories)
+    return (
+      <ul className="list-disc pl-6">
+        {answer.map((item, index) => (
+          <li key={index}>{renderAnswer(item)}</li>
+        ))}
+      </ul>
+    );
+  } else if (typeof answer === "object") {
+    // Render object responses ({ item, category })
+    return (
+      <div>
+        {Object.entries(answer).map(([key, value]) => (
+          <div key={key}>
+            <strong>{key}:</strong> {value}
+          </div>
+        ))}
+      </div>
+    );
+  } else {
+    return "Unsupported response type";
+  }
+};
 
 export default AllResponses;

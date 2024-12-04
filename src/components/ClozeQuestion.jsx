@@ -1,19 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 
-function ClozeQuestion({ onSave }) {
-  const [sentence, setSentence] = useState("");
-
+function ClozeEditor({ question, onChange }) {
   return (
-    <div className="p-4 border rounded-md mb-4">
-      <h3 className="font-bold mb-2">Cloze Question</h3>
-      <textarea
-        value={sentence}
-        onChange={(e) => setSentence(e.target.value)}
-        className="w-full p-2 border rounded"
-        placeholder="Type your sentence with blanks marked as [__]"
+    <div className="mb-4">
+      <h3>Cloze Question</h3>
+      <label>Sentence (use [__] for blanks):</label>
+      <input
+        type="text"
+        value={question.sentence}
+        onChange={(e) => onChange({ sentence: e.target.value })}
+        className="border p-2 rounded w-full"
       />
     </div>
   );
 }
-
-export default ClozeQuestion;
+export default ClozeEditor;

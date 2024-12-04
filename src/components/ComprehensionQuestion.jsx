@@ -1,41 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 
-function ComprehensionQuestion({ onSave }) {
-  const [passage, setPassage] = useState("");
-  const [questions, setQuestions] = useState([""]);
-
-  const handleQuestionChange = (index, value) => {
-    const updatedQuestions = [...questions];
-    updatedQuestions[index] = value;
-    setQuestions(updatedQuestions);
-  };
+function ComprehensionEditor({ question, onChange }) {
+  const handlePassageChange = (e) =>
+    onChange({ ...question, passage: e.target.value });
+  const handleQuestionsChange = (e) =>
+    onChange({ ...question, questions: e.target.value.split("\n") });
 
   return (
-    <div className="p-4 border rounded-md mb-4">
-      <h3 className="font-bold mb-2">Comprehension Question</h3>
+    <div className="mb-4">
+      <h3>Comprehension Question</h3>
+      <label>Passage:</label>
       <textarea
-        value={passage}
-        onChange={(e) => setPassage(e.target.value)}
-        className="w-full p-2 border rounded"
-        placeholder="Type the passage"
+        value={question.passage}
+        onChange={handlePassageChange}
+        className="border p-2 rounded w-full"
       />
-
-      <h4 className="mt-4">Questions</h4>
-      {questions.map((question, index) => (
-        <input
-          key={index}
-          type="text"
-          value={question}
-          onChange={(e) => handleQuestionChange(index, e.target.value)}
-          className="block mb-2 p-2 border rounded"
-          placeholder={`Question ${index + 1}`}
-        />
-      ))}
-      <button onClick={() => setQuestions([...questions, ""])}>
-        Add Question
-      </button>
+      <label>Questions (newline-separated):</label>
+      <textarea
+        value={question.questions.join("\n")}
+        onChange={handleQuestionsChange}
+        className="border p-2 rounded w-full"
+      />
     </div>
   );
 }
-
-export default ComprehensionQuestion;
+export default ComprehensionEditor;

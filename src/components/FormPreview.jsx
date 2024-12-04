@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 
-function FormPreview({ previewLink }) {
+function FormPreview() {
   const { id } = useParams(); // Get form ID from URL
   const [form, setForm] = useState(null);
   const [responses, setResponses] = useState({});
@@ -10,7 +10,7 @@ function FormPreview({ previewLink }) {
   useEffect(() => {
     // Fetch form data from backend
     axios
-      .get(`http://localhost:5000/forms/${id}`)
+      .get(`https://form-builder-backend-c1bb.onrender.com/forms/${id}`)
       .then((response) => {
         setForm(response.data);
       })
@@ -31,7 +31,10 @@ function FormPreview({ previewLink }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post(`http://localhost:5000/forms/${id}/submit`, { responses })
+      .post(
+        `https://form-builder-backend-c1bb.onrender.com/forms/${id}/submit`,
+        { responses }
+      )
       .then((response) => {
         alert("Responses submitted successfully!");
       })
@@ -65,14 +68,9 @@ function FormPreview({ previewLink }) {
           Submit
         </button>
       </form>
-      <a
-        href={`${previewLink}/responses`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-green-500 underline"
-      >
+      <Link to={`/forms/${id}/responses`} className="text-green-500 underline">
         View All Responses
-      </a>
+      </Link>
     </div>
   );
 }
@@ -148,121 +146,3 @@ function RenderComprehension({ question, onChange }) {
 }
 
 export default FormPreview;
-
-// function FormPreview() {
-//   const { id } = useParams(); // Get form ID from URL
-//   const [form, setForm] = useState(null);
-//   const [responses, setResponses] = useState({});
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     axios
-//       .get(`http://localhost:5000/forms/${id}`)
-//       .then((response) => {
-//         setForm(response.data);
-//         setLoading(false);
-//       })
-//       .catch((error) => {
-//         console.error("Failed to fetch form:", error);
-//         setLoading(false);
-//       });
-//   }, [id]);
-
-//   const handleResponseChange = (index, value) => {
-//     setResponses({ ...responses, [index]: value });
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     try {
-//       await axios.post(`http://localhost:5000/forms/${id}/submit`, {
-//         responses,
-//       });
-//       alert("Form submitted successfully!");
-//     } catch (error) {
-//       console.error("Failed to submit form:", error);
-//       alert("Failed to submit form.");
-//     }
-//   };
-
-//   if (loading) return <div>Loading...</div>;
-//   if (!form) return <div>Form not found.</div>;
-
-//   return (
-//     <div className="p-6">
-//       <h1 className="text-3xl font-bold mb-4">{form.title}</h1>
-//       {form.headerImage && (
-//         <img src={form.headerImage} alt="Form Header" className="mb-4" />
-//       )}
-
-//       <form onSubmit={handleSubmit}>
-//         {form.questions.map((question, index) => (
-//           <div key={index} className="mb-4">
-//             {renderQuestion(question, index, handleResponseChange)}
-//           </div>
-//         ))}
-//         <button type="submit" className="bg-blue-700 text-white p-2 rounded">
-//           Submit
-//         </button>
-//       </form>
-
-//       {/* Link to View All Responses */}
-//       <div className="mt-6">
-//         <Link
-//           to={`/forms/${id}/responses`}
-//           className="text-green-500 underline"
-//         >
-//           View All Responses
-//         </Link>
-//       </div>
-//     </div>
-//   );
-// }
-
-// const renderQuestion = (question, index, handleResponseChange) => {
-//   switch (question.type) {
-//     case "categorize":
-//       return (
-//         <div>
-//           <label>{`Categorize the following items:`}</label>
-//           <textarea
-//             onChange={(e) => handleResponseChange(index, e.target.value)}
-//             className="border p-2 rounded w-full"
-//           />
-//         </div>
-//       );
-//     case "cloze":
-//       return (
-//         <div>
-//           <label>{question.data.sentence}</label>
-//           <input
-//             type="text"
-//             onChange={(e) => handleResponseChange(index, e.target.value)}
-//             className="border p-2 rounded w-full"
-//           />
-//         </div>
-//       );
-//     case "comprehension":
-//       return (
-//         <div>
-//           <p>{question.data.passage}</p>
-//           {question.data.questions.map((q, i) => (
-//             <div key={i}>
-//               <label>{q}</label>
-//               <input
-//                 type="text"
-//                 onChange={(e) =>
-//                   handleResponseChange(`${index}-${i}`, e.target.value)
-//                 }
-//                 className="border p-2 rounded w-full"
-//               />
-//             </div>
-//           ))}
-//         </div>
-//       );
-//     default:
-//       return null;
-//   }
-// };
-
-// export default FormPreview;
